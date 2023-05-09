@@ -5,17 +5,18 @@
 //  Created by Christian Langolf on 08/05/2023.
 //
 
+
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject private var mic = Microphone()
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            HStack(spacing: 4) {
+                Text(String(mic.level))
+            }
         }
-        .padding()
     }
 }
 
