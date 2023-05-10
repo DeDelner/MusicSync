@@ -10,22 +10,30 @@ import AVFoundation
 
 class Microphone: ObservableObject {
     
-    struct HyperionStruct: Codable {
+    struct HyperionColorStruct: Codable {
         var command: String
         var priority: Int
         var color: [Int]
         var origin: String
     }
     
+    struct HyperionInstanceStruct: Codable {
+        var command: String
+        var subcommand: String
+        var instance: Int
+    }
+    
     // 1
     private var audioRecorder: AVAudioRecorder
     private var timer: Timer?
+    private var degree: Double
     
     // 2
-    @Published public var level: Int
+    @Published public var level: [Int]
     
     init() {
-        self.level = 0
+        self.level = [0, 0]
+        self.degree = 0.0
         
         // 3
         let audioSession = AVAudioSession.sharedInstance()
@@ -49,7 +57,7 @@ class Microphone: ObservableObject {
         // 5
         do {
             audioRecorder = try AVAudioRecorder(url: url, settings: recorderSettings)
-            try audioSession.setCategory(.ambient, mode: .measurement, options: [])
+            try audioSession.setCategory(.playAndRecord, mode: .default, options: [])
             
             startMonitoring()
         } catch {
@@ -62,6 +70,12 @@ class Microphone: ObservableObject {
         let level = max(0.0, CGFloat(level) + 50) // between 0.0 and 25
         
         return CGFloat(min(pow(level, 3) / 300, 255)) // scaled to max at 255 (our height of our bar)
+    }
+    
+    private func bassSoundLevel(level: Float) -> CGFloat {
+        let level = max(0.0, CGFloat(level) + 50) // between 0.0 and 25
+        
+        return CGFloat(min(max((pow(level, 3) / 300) - 255, 0), 255)) // scaled to max at 255 (our height of our bar)
     }
     
     // 6
@@ -86,40 +100,56 @@ class Microphone: ObservableObject {
             // 7
             self.audioRecorder.updateMeters()
             
-            self.level = Int(self.normalizeSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
-            
-            do {
-                let hyperionMessage = HyperionStruct(
-                    command: "color",
-                    priority: 100,
-                    color: [
-                        self.level,
-                        self.level,
-                        self.level
-                    ],
-                    origin: "musicsync"
-                )
-                
-                let encoder = JSONEncoder()
-                encoder.outputFormatting = .prettyPrinted
-                
-                let data = try encoder.encode(hyperionMessage)
-                let json = String(data: data, encoding: .utf8)
-                //print(String(data: data, encoding: .utf8)!)
-                
-                let message = URLSessionWebSocketTask.Message.string(json!)
-                
-//                webSocket?.send(message) { error in
-//                    if let error = error {
-//                        print("WebSocket sending error: \(error)")
-//                    }
-//                }
-                
-            } catch {
-                print("Oopsie doopsie")
+            if (self.degree < 360) {
+                self.degree += 0.0001
+            } else{
+                self.degree = 0
             }
-        
+            
+            self.level[0] = Int(self.normalizeSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
+            self.level[1] = Int(self.bassSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
+            
+            self.sendDataForInstance(webSocket: webSocket, instance: 1)
+            self.sendDataForInstance(webSocket: webSocket, instance: 0)
         })
+    }
+    
+    private func sendData(webSocket: URLSessionWebSocketTask?, hyperionMessage: Codable) {
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            
+            let data = try encoder.encode(hyperionMessage)
+            let json = String(data: data, encoding: .utf8)
+            //print(String(data: data, encoding: .utf8)!)
+            
+            let message = URLSessionWebSocketTask.Message.string(json!)
+            
+            webSocket?.send(message) { error in
+                if let error = error {
+                    print("WebSocket sending error: \(error)")
+                }
+            }
+        } catch {
+            print("Oopsie doopsie")
+        }
+    }
+    
+    private func sendDataForInstance(webSocket: URLSessionWebSocketTask?, instance: Int) {
+        let switchTo = HyperionInstanceStruct(command: "instance", subcommand: "switchTo", instance: instance)
+        self.sendData(webSocket: webSocket, hyperionMessage: switchTo)
+        
+        let color = HyperionColorStruct(
+            command: "color",
+            priority: 100,
+            color: [
+                self.level[0],
+                self.level[1],
+                self.level[0]
+            ],
+            origin: "musicsync"
+        )
+        //self.sendData(webSocket: webSocket, hyperionMessage: color)
     }
     
     // 8

@@ -13,8 +13,11 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
+            ProgressView(value: Double(mic.level[0]) / 255.0)
+            ProgressView(value: Double(mic.level[1]) / 255.0)
             HStack(spacing: 4) {
-                Text(String(mic.level))
+                Text(String(mic.level[0]))
+                Text(String(mic.level[1]))
             }
         }
     }
