@@ -12,13 +12,22 @@ struct ContentView: View {
     @ObservedObject private var mic = Microphone()
 
     var body: some View {
-        VStack {
-            ProgressView(value: Double(mic.level[0]) / 255.0)
-            ProgressView(value: Double(mic.level[1]) / 255.0)
-            HStack(spacing: 4) {
-                Text(String(mic.level[0]))
-                Text(String(mic.level[1]))
-            }
+        NavigationView {
+            VStack(alignment: .leading) {
+                Text("Status: \(mic.status)")
+                Text("Offset: \(Int(mic.offset))")
+                Slider(
+                    value: $mic.offset,
+                    in: -300...300
+                )
+                Text("Levels: \(mic.level[0]) \(mic.level[1])")
+                ProgressView(value: Double(mic.level[0]) / 255.0)
+                    .scaleEffect(x: 1, y: 4, anchor: .center)
+                    .padding(.bottom, 8)
+                ProgressView(value: Double(mic.level[1]) / 255.0)
+                    .scaleEffect(x: 1, y: 4, anchor: .center)
+                    .padding(.bottom, 8)
+            }.padding(25).navigationTitle("MusicSync")
         }
     }
 }

@@ -27,13 +27,18 @@ class Microphone: ObservableObject {
     private var audioRecorder: AVAudioRecorder
     private var timer: Timer?
     private var degree: Double
+    private var webSocket: URLSessionWebSocketTask?
     
     // 2
     @Published public var level: [Int]
+    @Published public var offset: Double
+    @Published public var status: String
     
     init() {
         self.level = [0, 0]
         self.degree = 0.0
+        self.offset = 0
+        self.status = "Not connected"
         
         // 3
         let audioSession = AVAudioSession.sharedInstance()
@@ -69,18 +74,17 @@ class Microphone: ObservableObject {
     private func normalizeSoundLevel(level: Float) -> CGFloat {
         let level = max(0.0, CGFloat(level) + 50) // between 0.0 and 25
         
-        return CGFloat(min(pow(level, 3) / 300, 255)) // scaled to max at 255 (our height of our bar)
+        return CGFloat(min(max((pow(level, 3) / 300) + self.offset, 0), 255)) // scaled to max at 255 (our height of our bar)
     }
     
     private func bassSoundLevel(level: Float) -> CGFloat {
         let level = max(0.0, CGFloat(level) + 50) // between 0.0 and 25
         
-        return CGFloat(min(max((pow(level, 3) / 300) - 255, 0), 255)) // scaled to max at 255 (our height of our bar)
+        return CGFloat(min(max((pow(level, 3) / 300) - 255 + self.offset, 0), 255)) // scaled to max at 255 (our height of our bar)
     }
     
     // 6
     private func startMonitoring() {
-        var webSocket : URLSessionWebSocketTask?
         
         //Session
         let session = URLSession(configuration: .default)
@@ -93,6 +97,14 @@ class Microphone: ObservableObject {
         
         //Connect and hanles handshake
         webSocket?.resume()
+        
+        func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+            status = "Connected to server"
+        }
+        
+        func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+            status = "Disconnect from Server"
+        }
         
         audioRecorder.isMeteringEnabled = true
         audioRecorder.record()
@@ -109,12 +121,12 @@ class Microphone: ObservableObject {
             self.level[0] = Int(self.normalizeSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
             self.level[1] = Int(self.bassSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
             
-            self.sendDataForInstance(webSocket: webSocket, instance: 1)
-            self.sendDataForInstance(webSocket: webSocket, instance: 0)
+            self.sendDataForInstance(instance: 1)
+            self.sendDataForInstance(instance: 0)
         })
     }
     
-    private func sendData(webSocket: URLSessionWebSocketTask?, hyperionMessage: Codable) {
+    private func sendData(hyperionMessage: Codable) {
         do {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
@@ -135,9 +147,9 @@ class Microphone: ObservableObject {
         }
     }
     
-    private func sendDataForInstance(webSocket: URLSessionWebSocketTask?, instance: Int) {
+    private func sendDataForInstance(instance: Int) {
         let switchTo = HyperionInstanceStruct(command: "instance", subcommand: "switchTo", instance: instance)
-        self.sendData(webSocket: webSocket, hyperionMessage: switchTo)
+        self.sendData(hyperionMessage: switchTo)
         
         let color = HyperionColorStruct(
             command: "color",
@@ -149,7 +161,7 @@ class Microphone: ObservableObject {
             ],
             origin: "musicsync"
         )
-        //self.sendData(webSocket: webSocket, hyperionMessage: color)
+        self.sendData(hyperionMessage: color)
     }
     
     // 8
@@ -158,4 +170,3 @@ class Microphone: ObservableObject {
         audioRecorder.stop()
     }
 }
-

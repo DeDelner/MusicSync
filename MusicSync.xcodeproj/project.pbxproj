@@ -20,6 +20,7 @@
 		AE3FF8122A08CD7900EEBB9A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AEAEAB282A0D50C100DD36B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AEFBD4F82A09586D00CC63A9 /* Microphone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microphone.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -53,6 +54,7 @@
 		AE3FF80F2A08CD7900EEBB9A /* MusicSync */ = {
 			isa = PBXGroup;
 			children = (
+				AEAEAB282A0D50C100DD36B6 /* Info.plist */,
 				AE3FF8102A08CD7900EEBB9A /* MusicSyncApp.swift */,
 				AE3FF8122A08CD7900EEBB9A /* ContentView.swift */,
 				AEFBD4F82A09586D00CC63A9 /* Microphone.swift */,
@@ -274,6 +276,7 @@
 				DEVELOPMENT_TEAM = 7N768UHAM7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MusicSync/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To determine music volume to sync the lights with";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -304,6 +307,7 @@
 				DEVELOPMENT_TEAM = 7N768UHAM7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MusicSync/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To determine music volume to sync the lights with";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
