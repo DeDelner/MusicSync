@@ -20,6 +20,11 @@ struct ContentView: View {
                     value: $mic.offset,
                     in: -300...300
                 )
+                Text("Sensivity: \(Int(mic.sensivity))")
+                Slider(
+                    value: $mic.sensivity,
+                    in: -100...100
+                )
                 Text("Levels: \(mic.level[0]) \(mic.level[1])")
                 ProgressView(value: Double(mic.level[0]) / 255.0)
                     .scaleEffect(x: 1, y: 4, anchor: .center)
