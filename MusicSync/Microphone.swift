@@ -82,7 +82,8 @@ class Microphone: ObservableObject {
     
     private func normalizeSoundLevel(level: Float) -> CGFloat {
         let level = max(0.0, CGFloat(level) + 50)
-        let sensivity = CGFloat(300.0 + self.sensivity);
+        //let sensivity = CGFloat(300.0 + self.sensivity);
+        let sensivity = CGFloat(300.0);
         
         return CGFloat(min(max((pow(level, 3) / sensivity) + offset, 0), 255))
     }
@@ -124,7 +125,7 @@ class Microphone: ObservableObject {
             self.level[0] = Int(self.normalizeSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
             self.level[1] = Int(self.bassSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
             
-            self.sendDataForInstance(instance: 1)
+            //self.sendDataForInstance(instance: 1)
             self.sendDataForInstance(instance: 0)
         })
     }
@@ -151,13 +152,13 @@ class Microphone: ObservableObject {
     
     private func sendDataForInstance(instance: Int) {
         let switchTo = HyperionInstanceStruct(command: "instance", subcommand: "switchTo", instance: instance)
-        self.sendData(hyperionMessage: switchTo)
+        //self.sendData(hyperionMessage: switchTo)
         
         colors[0] = colors[0].adjust(hueBy: CGFloat(self.level[1]) * 0.00002)
         //colors[1] = colors[1].adjust(hueBy: CGFloat(self.level[1]) * 0.00002)
         //colors[2] = colors[2].adjust(hueBy: CGFloat(self.level[1]) * 0.00002)
         
-        var newColor1 = UIColor(.black).mixin(infusion: colors[0], alpha: CGFloat(self.level[0]) / 255)
+        var newColor1 = UIColor(.black).mixin(infusion: colors[0], alpha: CGFloat(self.level[0]) * 0.5 / 255)
         newColor1 = newColor1.mixin(infusion: UIColor(red: 255, green: 255, blue: 255, alpha: 255), alpha: CGFloat(self.level[1]) / 255)
 //
 //        var newColor2 = UIColor(.black).mixin(infusion: colors[1], alpha: CGFloat(self.level[0]) / 255)
