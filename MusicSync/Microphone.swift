@@ -10,36 +10,21 @@ import AVFoundation
 import SwiftUI
 
 class Microphone: ObservableObject {
-    
-    struct HyperionColorStruct: Codable {
-        var command: String
-        var priority: Int
-        var color: [Int]
-        var origin: String
-    }
-    
-    struct HyperionInstanceStruct: Codable {
-        var command: String
-        var subcommand: String
-        var instance: Int
-    }
-    
-    // 1
     private var audioRecorder: AVAudioRecorder
     private var timer: Timer?
-    private var degree: Double
-    private var webSocket: URLSessionWebSocketTask?
     private var colors: [UIColor]
-    
-    // 2
+    private var webSocket: URLSessionWebSocketTask?
+    private var requestID = 1
+    private var previousVolumeLevel: CGFloat = 0.0
+    private var lastRequestTime: Date = Date()
+
     @Published public var level: [Int]
     @Published public var offset: Double
     @Published public var sensivity: Double
     @Published public var status: String
-    
+
     init() {
         self.level = [0, 0]
-        self.degree = 0.0
         self.offset = 0
         self.sensivity = 0
         self.status = "Not connected"
@@ -48,8 +33,7 @@ class Microphone: ObservableObject {
             UIColor(red: 200, green: 50, blue: 0, alpha: 1),
             UIColor(red: 150, green: 100, blue: 50, alpha: 1)
         ]
-        
-        // 3
+
         let audioSession = AVAudioSession.sharedInstance()
         if audioSession.recordPermission != .granted {
             audioSession.requestRecordPermission { (isGranted) in
@@ -58,8 +42,7 @@ class Microphone: ObservableObject {
                 }
             }
         }
-        
-        // 4
+
         let url = URL(fileURLWithPath: "/dev/null", isDirectory: true)
         let recorderSettings: [String:Any] = [
             AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
@@ -67,11 +50,14 @@ class Microphone: ObservableObject {
             AVNumberOfChannelsKey: 1,
             AVEncoderAudioQualityKey: AVAudioQuality.min.rawValue
         ]
-        
-        // 5
+
         do {
             audioRecorder = try AVAudioRecorder(url: url, settings: recorderSettings)
             try audioSession.setCategory(.playAndRecord, mode: .default, options: [])
+            
+            webSocket = URLSession.shared.webSocketTask(with: URL(string: "ws://192.168.0.207:8123/api/websocket")!)
+            webSocket?.resume()
+            receiveWebSocketMessage()
             
             startMonitoring()
         } catch {
@@ -79,10 +65,8 @@ class Microphone: ObservableObject {
         }
     }
     
-    
     private func normalizeSoundLevel(level: Float) -> CGFloat {
         let level = max(0.0, CGFloat(level) + 50)
-        //let sensivity = CGFloat(300.0 + self.sensivity);
         let sensivity = CGFloat(300.0);
         
         return CGFloat(min(max((pow(level, 3) / sensivity) + offset, 0), 255))
@@ -95,97 +79,104 @@ class Microphone: ObservableObject {
         return CGFloat(min(max((pow(level, 3) / sensivity) - 255 + offset, 0), 255))
     }
     
-    // 6
     private func startMonitoring() {
-        
-        //Session
-        let session = URLSession(configuration: .default)
-        
-        //Server API
-        let url = URL(string:  "ws://192.168.0.206:8090")
-        
-        //Socket
-        webSocket = session.webSocketTask(with: url!)
-        
-        //Connect and hanles handshake
-        webSocket?.resume()
-        
         audioRecorder.isMeteringEnabled = true
         audioRecorder.record()
         timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { (timer) in
-            // 7
             self.audioRecorder.updateMeters()
-            
-            if (self.degree < 360) {
-                self.degree += 0.0001
-            } else{
-                self.degree = 0
-            }
             
             self.level[0] = Int(self.normalizeSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
             self.level[1] = Int(self.bassSoundLevel(level: self.audioRecorder.averagePower(forChannel: 0)))
             
-            //self.sendDataForInstance(instance: 1)
-            self.sendDataForInstance(instance: 0)
+            let currentVolumeLevel = CGFloat(self.level[0] + self.level[1])
+            let deltaVolumeLevel = currentVolumeLevel - self.previousVolumeLevel
+            let timeSinceLastRequest = Date().timeIntervalSince(self.lastRequestTime)
+            
+            let volumeThreshold: CGFloat = 10.0
+            
+            if (deltaVolumeLevel > 50.0 || timeSinceLastRequest >= 0.2) {
+                self.sendColorToHomeAssistant(level: deltaVolumeLevel)
+                self.previousVolumeLevel = currentVolumeLevel
+                self.lastRequestTime = Date()
+            }
         })
     }
     
-    private func sendData(hyperionMessage: Codable) {
-        do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            
-            let data = try encoder.encode(hyperionMessage)
-            let json = String(data: data, encoding: .utf8)
-            
-            let message = URLSessionWebSocketTask.Message.string(json!)
-            
-            webSocket?.send(message) { error in
-                if let error = error {
-                    print("WebSocket sending error: \(error)")
+    private func sendColorToHomeAssistant(level: CGFloat) {
+        colors[0] = colors[0].adjust(hueBy: CGFloat(self.level[1]) * 0.001)
+        
+        var newColor = UIColor(.black).mixin(infusion: colors[0], alpha: CGFloat(self.level[0]) * 0.5 / 255)
+        newColor = newColor.mixin(infusion: UIColor(red: 255, green: 255, blue: 255, alpha: 255), alpha: CGFloat(self.level[1]) / 255)
+        
+        let rgb = [
+            Int(newColor.rgba.red),
+            Int(newColor.rgba.green),
+            Int(newColor.rgba.blue)
+        ]
+        
+        let transitionTime = level > 50.0 ? 0 : 0.1
+
+        webSocket?.send(URLSessionWebSocketTask.Message.string("""
+        {
+            "id": \(self.requestID),
+            "type": "call_service",
+            "domain": "light",
+            "service": "turn_on",
+            "service_data": {
+                "entity_id": "light.musicsync",
+                "rgb_color": \(rgb),
+                "brightness": \(self.level[0] + 5),
+                "transition": \(transitionTime)
+            }
+        }
+        """)) { error in
+            if let error = error {
+                print("WebSocket sending error: \(error)")
+            }
+        }
+        self.requestID += 1
+    }
+    
+    private func receiveWebSocketMessage() {
+        webSocket?.receive { result in
+            switch result {
+            case .failure(let error):
+                print("WebSocket receiving error: \(error)")
+            case .success(let message):
+                switch message {
+                case .string(let text):
+                    print("Received string: \(text)")
+                    if text.contains("\"type\":\"auth_required\"") {
+                        self.webSocket?.send(URLSessionWebSocketTask.Message.string("""
+                        {
+                            "type": "auth",
+                            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5NWY0MTY1NDljOGQ0ZTVhOTY4ZWJkMDI4ZGMxYWZlMyIsImlhdCI6MTY5MDkxNzAxOSwiZXhwIjoyMDA2Mjc3MDE5fQ.mMtpcKqQSd4yTG4CvhJ6v58nE2l6CmqKv_wUkIiKU_A"
+                        }
+                        """)) { error in
+                            if let error = error {
+                                print("WebSocket sending error: \(error)")
+                            }
+                        }
+                    } else if text.contains("\"type\":\"auth_ok\"") {
+                        self.status = "Connected"
+                    }
+                case .data(let data):
+                    print("Received data: \(data)")
+                @unknown default:
+                    print("Unknown message type")
                 }
             }
-        } catch {
-            print("Oopsie doopsie")
         }
     }
     
-    private func sendDataForInstance(instance: Int) {
-        let switchTo = HyperionInstanceStruct(command: "instance", subcommand: "switchTo", instance: instance)
-        //self.sendData(hyperionMessage: switchTo)
-        
-        colors[0] = colors[0].adjust(hueBy: CGFloat(self.level[1]) * 0.00002)
-        //colors[1] = colors[1].adjust(hueBy: CGFloat(self.level[1]) * 0.00002)
-        //colors[2] = colors[2].adjust(hueBy: CGFloat(self.level[1]) * 0.00002)
-        
-        var newColor1 = UIColor(.black).mixin(infusion: colors[0], alpha: CGFloat(self.level[0]) * 0.5 / 255)
-        newColor1 = newColor1.mixin(infusion: UIColor(red: 255, green: 255, blue: 255, alpha: 255), alpha: CGFloat(self.level[1]) / 255)
-//
-//        var newColor2 = UIColor(.black).mixin(infusion: colors[1], alpha: CGFloat(self.level[0]) / 255)
-//        newColor2 = newColor2.mixin(infusion: UIColor(red: 255, green: 255, blue: 255, alpha: 255), alpha: CGFloat(self.level[1]) / 255)
-//
-//        var newColor3 = UIColor(.black).mixin(infusion: colors[2], alpha: CGFloat(self.level[0]) / 255)
-//        newColor3 = newColor3.mixin(infusion: UIColor(red: 255, green: 255, blue: 255, alpha: 255), alpha: CGFloat(self.level[1]) / 255)
-        
-        let color = HyperionColorStruct(
-            command: "color",
-            priority: 100,
-            color: [
-                Int(newColor1.rgba.red),
-                Int(newColor1.rgba.green),
-                Int(newColor1.rgba.blue)
-            ],
-            origin: "musicsync"
-        )
-        self.sendData(hyperionMessage: color)
-    }
-    
-    // 8
     deinit {
         timer?.invalidate()
         audioRecorder.stop()
+        webSocket?.cancel(with: .normalClosure, reason: nil)
     }
 }
+
+
 
 extension UIColor {
     var rgba: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
