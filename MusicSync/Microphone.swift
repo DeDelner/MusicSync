@@ -150,7 +150,7 @@ class Microphone: ObservableObject {
                         self.webSocket?.send(URLSessionWebSocketTask.Message.string("""
                         {
                             "type": "auth",
-                            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5NWY0MTY1NDljOGQ0ZTVhOTY4ZWJkMDI4ZGMxYWZlMyIsImlhdCI6MTY5MDkxNzAxOSwiZXhwIjoyMDA2Mjc3MDE5fQ.mMtpcKqQSd4yTG4CvhJ6v58nE2l6CmqKv_wUkIiKU_A"
+                            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIyNzk2YWY3MDhlMDQ0ZDBkYmJhZDU2MjNjNWU1ZTE0MCIsImlhdCI6MTY5ODYwMzQ0MiwiZXhwIjoyMDEzOTYzNDQyfQ.Uhx7zBrjcjv6OR7KOVp72586LqKzeuIt9l1-GQ3wh6A"
                         }
                         """)) { error in
                             if let error = error {
