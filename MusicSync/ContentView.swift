@@ -14,6 +14,13 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
+                List {
+                    Section {
+                        Label("Sun", systemImage: "sun.max")
+                        Label("Cloud", systemImage: "cloud")
+                        Label("Rain", systemImage: "cloud.rain")
+                    }
+                }.listStyle(.automatic)
                 Text("Status: \(mic.status)")
                 Text("Offset: \(Int(mic.offset))")
                 Slider(

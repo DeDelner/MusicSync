@@ -15,6 +15,7 @@ class Microphone: ObservableObject {
     private var colors: [UIColor]
     private var webSocket: URLSessionWebSocketTask?
     private var requestID = 1
+    private var volumeThreshold: CGFloat = 50.0
     private var previousVolumeLevel: CGFloat = 0.0
     private var lastRequestTime: Date = Date()
 
@@ -67,14 +68,14 @@ class Microphone: ObservableObject {
     
     private func normalizeSoundLevel(level: Float) -> CGFloat {
         let level = max(0.0, CGFloat(level) + 50)
-        let sensivity = CGFloat(300.0);
+        let sensivity = CGFloat(300.0 - self.sensivity * 3);
         
         return CGFloat(min(max((pow(level, 3) / sensivity) + offset, 0), 255))
     }
     
     private func bassSoundLevel(level: Float) -> CGFloat {
         let level = max(0.0, CGFloat(level) + 50)
-        let sensivity = CGFloat(300.0 + self.sensivity);
+        let sensivity = CGFloat(300.0 - self.sensivity * 3);
         
         return CGFloat(min(max((pow(level, 3) / sensivity) - 255 + offset, 0), 255))
     }
@@ -92,9 +93,7 @@ class Microphone: ObservableObject {
             let deltaVolumeLevel = currentVolumeLevel - self.previousVolumeLevel
             let timeSinceLastRequest = Date().timeIntervalSince(self.lastRequestTime)
             
-            let volumeThreshold: CGFloat = 10.0
-            
-            if (deltaVolumeLevel > 50.0 || timeSinceLastRequest >= 0.2) {
+            if (deltaVolumeLevel > self.volumeThreshold || timeSinceLastRequest >= 0.2) {
                 self.sendColorToHomeAssistant(level: deltaVolumeLevel)
                 self.previousVolumeLevel = currentVolumeLevel
                 self.lastRequestTime = Date()
@@ -114,7 +113,7 @@ class Microphone: ObservableObject {
             Int(newColor.rgba.blue)
         ]
         
-        let transitionTime = level > 50.0 ? 0 : 0.1
+        let transitionTime = level > self.volumeThreshold ? 0 : 0.1
 
         webSocket?.send(URLSessionWebSocketTask.Message.string("""
         {
@@ -125,7 +124,7 @@ class Microphone: ObservableObject {
             "service_data": {
                 "entity_id": "light.musicsync",
                 "rgb_color": \(rgb),
-                "brightness": \(self.level[0] + 5),
+                "brightness": \(self.level[0]),
                 "transition": \(transitionTime)
             }
         }

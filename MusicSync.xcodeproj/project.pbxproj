@@ -11,7 +11,10 @@
 		AE3FF8132A08CD7900EEBB9A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3FF8122A08CD7900EEBB9A /* ContentView.swift */; };
 		AE3FF8152A08CD7A00EEBB9A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */; };
 		AE3FF8182A08CD7A00EEBB9A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */; };
+		AEADFF6D2B4340B90037F158 /* HassSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEADFF6C2B4340B90037F158 /* HassSettings.swift */; };
+		AEADFF6F2B45DB9F0037F158 /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEADFF6E2B45DB9F0037F158 /* WebSocketManager.swift */; };
 		AEFBD4F92A09586D00CC63A9 /* Microphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFBD4F82A09586D00CC63A9 /* Microphone.swift */; };
+		AEFCC3DA2B4307D1007A5507 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCC3D92B4307D1007A5507 /* Home.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,8 +23,11 @@
 		AE3FF8122A08CD7900EEBB9A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AEADFF6C2B4340B90037F158 /* HassSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HassSettings.swift; sourceTree = "<group>"; };
+		AEADFF6E2B45DB9F0037F158 /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		AEAEAB282A0D50C100DD36B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AEFBD4F82A09586D00CC63A9 /* Microphone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microphone.swift; sourceTree = "<group>"; };
+		AEFCC3D92B4307D1007A5507 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +60,9 @@
 		AE3FF80F2A08CD7900EEBB9A /* MusicSync */ = {
 			isa = PBXGroup;
 			children = (
+				AEFCC3D82B4307BA007A5507 /* Views */,
 				AEAEAB282A0D50C100DD36B6 /* Info.plist */,
+				AEADFF6E2B45DB9F0037F158 /* WebSocketManager.swift */,
 				AE3FF8102A08CD7900EEBB9A /* MusicSyncApp.swift */,
 				AE3FF8122A08CD7900EEBB9A /* ContentView.swift */,
 				AEFBD4F82A09586D00CC63A9 /* Microphone.swift */,
@@ -70,6 +78,15 @@
 				AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AEFCC3D82B4307BA007A5507 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AEFCC3D92B4307D1007A5507 /* Home.swift */,
+				AEADFF6C2B4340B90037F158 /* HassSettings.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,9 +159,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEADFF6D2B4340B90037F158 /* HassSettings.swift in Sources */,
 				AE3FF8132A08CD7900EEBB9A /* ContentView.swift in Sources */,
 				AE3FF8112A08CD7900EEBB9A /* MusicSyncApp.swift in Sources */,
+				AEFCC3DA2B4307D1007A5507 /* Home.swift in Sources */,
 				AEFBD4F92A09586D00CC63A9 /* Microphone.swift in Sources */,
+				AEADFF6F2B45DB9F0037F158 /* WebSocketManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -5,12 +5,125 @@
 //  Created by Christian Langolf on 01/01/2024.
 //
 
+import Security
 import SwiftUI
 
-struct HassSettings: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct KeychainHelper {
+    static func save(key: String, data: Data) -> OSStatus {
+        let query = [
+            kSecClass as String: kSecClassGenericPassword as String,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: data ] as [String: Any]
+
+        SecItemDelete(query as CFDictionary)
+        return SecItemAdd(query as CFDictionary, nil)
     }
+
+    static func load(key: String) -> Data? {
+        let query = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: kCFBooleanTrue!,
+            kSecMatchLimit as String: kSecMatchLimitOne ] as [String: Any]
+
+        var item: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        if status == noErr {
+            return item as? Data
+        }
+        return nil
+    }
+}
+
+struct HassSettings: View {
+    @State private var ipAddress = ""
+    @State private var bearerToken = ""
+    @State private var entityId = ""
+    @State private var showingAlert = false
+    @State private var alertMessage = ""
+    @State private var isLoading = false
+    
+    @ObservedObject var webSocketManager = WebSocketManager.shared
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Connection")) {
+                    TextField("IP Address or Hostname", text: $ipAddress)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                    TextField("Bearer Token", text: $bearerToken)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                }
+
+                Section(header: Text("Entity")) {
+                    TextField("Entity ID", text: $entityId)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                }
+
+                Button("Connect") {
+                    isLoading = true
+                    do {
+                        try saveSettings()
+                        try webSocketManager.connect()
+                        isLoading = false
+                    } catch {
+                        alertMessage = error.localizedDescription
+                        showingAlert = true
+                        isLoading = false
+                    }
+                }.disabled(isLoading)
+                
+                if isLoading {
+                    ProgressView()
+                }
+
+                Text("Status: \(webSocketManager.status)")
+            }
+            .navigationTitle("Home Assistant")
+            .onAppear {
+                loadSettings()
+            }
+            .alert(isPresented: $showingAlert) {
+                Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
+
+    func saveSettings() throws {
+        if validateIpAddress(ipAddress: ipAddress) {
+            UserDefaults.standard.set(ipAddress, forKey: "HassIP")
+            UserDefaults.standard.set(entityId, forKey: "HassEntityID")
+            if let tokenData = bearerToken.data(using: .utf8) {
+                let status = KeychainHelper.save(key: "BearerToken", data: tokenData)
+                print(status == noErr ? "Token saved successfully" : "Failed to save Token")
+            }
+        } else {
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Invalid IP address or port. It cannot start with http:// or https:// (for now)"])
+        }
+    }
+
+    func validateIpAddress(ipAddress: String) -> Bool {
+        if !ipAddress.hasPrefix("https") && !ipAddress.hasPrefix("http") {
+            let urlComponents = URLComponents(string: "http://\(ipAddress)")
+            if let host = urlComponents?.host, let port = urlComponents?.port {
+                let ipAndPort = "\(host):\(port)"
+                return ipAddress.contains(ipAndPort)
+            }
+        }
+        return false
+    }
+
+    func loadSettings() {
+        ipAddress = UserDefaults.standard.string(forKey: "HassIP") ?? ""
+        entityId = UserDefaults.standard.string(forKey: "HassEntityID") ?? ""
+        if let token = KeychainHelper.load(key: "BearerToken") {
+            bearerToken = String(decoding: token, as: UTF8.self)
+        }
+    }
+
 }
 
 #Preview {
