@@ -11,9 +11,14 @@
 		AE3FF8132A08CD7900EEBB9A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3FF8122A08CD7900EEBB9A /* ContentView.swift */; };
 		AE3FF8152A08CD7A00EEBB9A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */; };
 		AE3FF8182A08CD7A00EEBB9A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */; };
+		AE8222C52B474D8F0054BB36 /* Microphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8222C42B474D8F0054BB36 /* Microphone.swift */; };
+		AE8222C72B4754D30054BB36 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8222C62B4754D30054BB36 /* SettingsManager.swift */; };
+		AE8222C92B47555A0054BB36 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8222C82B47555A0054BB36 /* KeychainHelper.swift */; };
+		AE8222CB2B4859180054BB36 /* AudioProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8222CA2B4859180054BB36 /* AudioProcessor.swift */; };
 		AEADFF6D2B4340B90037F158 /* HassSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEADFF6C2B4340B90037F158 /* HassSettings.swift */; };
 		AEADFF6F2B45DB9F0037F158 /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEADFF6E2B45DB9F0037F158 /* WebSocketManager.swift */; };
-		AEFBD4F92A09586D00CC63A9 /* Microphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFBD4F82A09586D00CC63A9 /* Microphone.swift */; };
+		AEC98EF22B48717F006671A7 /* MicrophoneSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC98EF12B48717F006671A7 /* MicrophoneSettings.swift */; };
+		AEFBD4F92A09586D00CC63A9 /* DeprecatedMicrophone.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFBD4F82A09586D00CC63A9 /* DeprecatedMicrophone.swift */; };
 		AEFCC3DA2B4307D1007A5507 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCC3D92B4307D1007A5507 /* Home.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,10 +28,15 @@
 		AE3FF8122A08CD7900EEBB9A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AE8222C42B474D8F0054BB36 /* Microphone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microphone.swift; sourceTree = "<group>"; };
+		AE8222C62B4754D30054BB36 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		AE8222C82B47555A0054BB36 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		AE8222CA2B4859180054BB36 /* AudioProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioProcessor.swift; sourceTree = "<group>"; };
 		AEADFF6C2B4340B90037F158 /* HassSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HassSettings.swift; sourceTree = "<group>"; };
 		AEADFF6E2B45DB9F0037F158 /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		AEAEAB282A0D50C100DD36B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		AEFBD4F82A09586D00CC63A9 /* Microphone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microphone.swift; sourceTree = "<group>"; };
+		AEC98EF12B48717F006671A7 /* MicrophoneSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneSettings.swift; sourceTree = "<group>"; };
+		AEFBD4F82A09586D00CC63A9 /* DeprecatedMicrophone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedMicrophone.swift; sourceTree = "<group>"; };
 		AEFCC3D92B4307D1007A5507 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,9 +75,13 @@
 				AEADFF6E2B45DB9F0037F158 /* WebSocketManager.swift */,
 				AE3FF8102A08CD7900EEBB9A /* MusicSyncApp.swift */,
 				AE3FF8122A08CD7900EEBB9A /* ContentView.swift */,
-				AEFBD4F82A09586D00CC63A9 /* Microphone.swift */,
+				AEFBD4F82A09586D00CC63A9 /* DeprecatedMicrophone.swift */,
 				AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */,
 				AE3FF8162A08CD7A00EEBB9A /* Preview Content */,
+				AE8222C42B474D8F0054BB36 /* Microphone.swift */,
+				AE8222C62B4754D30054BB36 /* SettingsManager.swift */,
+				AE8222C82B47555A0054BB36 /* KeychainHelper.swift */,
+				AE8222CA2B4859180054BB36 /* AudioProcessor.swift */,
 			);
 			path = MusicSync;
 			sourceTree = "<group>";
@@ -85,6 +99,7 @@
 			children = (
 				AEFCC3D92B4307D1007A5507 /* Home.swift */,
 				AEADFF6C2B4340B90037F158 /* HassSettings.swift */,
+				AEC98EF12B48717F006671A7 /* MicrophoneSettings.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -161,9 +176,14 @@
 			files = (
 				AEADFF6D2B4340B90037F158 /* HassSettings.swift in Sources */,
 				AE3FF8132A08CD7900EEBB9A /* ContentView.swift in Sources */,
+				AEC98EF22B48717F006671A7 /* MicrophoneSettings.swift in Sources */,
 				AE3FF8112A08CD7900EEBB9A /* MusicSyncApp.swift in Sources */,
+				AE8222CB2B4859180054BB36 /* AudioProcessor.swift in Sources */,
 				AEFCC3DA2B4307D1007A5507 /* Home.swift in Sources */,
-				AEFBD4F92A09586D00CC63A9 /* Microphone.swift in Sources */,
+				AE8222C92B47555A0054BB36 /* KeychainHelper.swift in Sources */,
+				AE8222C72B4754D30054BB36 /* SettingsManager.swift in Sources */,
+				AEFBD4F92A09586D00CC63A9 /* DeprecatedMicrophone.swift in Sources */,
+				AE8222C52B474D8F0054BB36 /* Microphone.swift in Sources */,
 				AEADFF6F2B45DB9F0037F158 /* WebSocketManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

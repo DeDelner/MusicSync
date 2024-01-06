@@ -9,35 +9,50 @@ import SwiftUI
 
 struct Home: View {
 //    @ObservedObject private var mic = Microphone()
+    @ObservedObject var webSocketManager = WebSocketManager.shared
+    @ObservedObject var settingsManager = SettingsManager.shared
+    
+    @ObservedObject var audioProcessor = AudioProcessor.shared
 
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Home Assistant")) {
-                    NavigationLink {
-                        HassSettings()
-                    } label: {
-                        HStack {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                                .foregroundColor(.blue)
+                NavigationLink {
+                    HassSettings()
+                } label: {
+                    HStack {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.blue)
+                        VStack(alignment: .leading) {
                             Text("Home Assistant")
+                            Text("Status: \(webSocketManager.status)")
+                                .font(.footnote)
                         }
                     }
                 }
                 
-                Section(header: Text("Microphone Settings")) {
+                Section() {
+                    NavigationLink {
+                        MicrophoneSettings()
+                    } label: {
+                        Text("Microphone Settings")
+                    }
                     NavigationLink {
                         EmptyView()
                     } label: {
-                        Text("Navigation Link")
+                        Text("Sync Settings")
                     }
                 }
                 
-//                ProgressView(value: Double(mic.level[0]) / 255.0)
-//                    .scaleEffect(x: 1, y: 4, anchor: .center)
-//                    .padding(.bottom, 8)
+                Section(header: Text("Monitoring")) {
+                    Text("\(audioProcessor.rawAmpltiude)")
+                    ProgressView(value: Double(audioProcessor.rawAmpltiude))
+                        .scaleEffect(x: 1, y: 4, anchor: .center)
+                        .padding(.bottom, 8)
+                }
+
 //                ProgressView(value: Double(mic.level[1]) / 255.0)
 //                    .scaleEffect(x: 1, y: 4, anchor: .center)
 //                    .padding(.bottom, 8)

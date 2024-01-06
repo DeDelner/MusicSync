@@ -9,6 +9,16 @@ import SwiftUI
 
 @main
 struct MusicSyncApp: App {
+    @ObservedObject var webSocketManager = WebSocketManager.shared
+    
+    init() {
+        do {
+            try webSocketManager.connect()
+        } catch {
+            
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             Home()

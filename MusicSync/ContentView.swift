@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject private var mic = Microphone()
+    @ObservedObject private var mic = DeprecatedMicrophone()
 
     var body: some View {
         NavigationView {
