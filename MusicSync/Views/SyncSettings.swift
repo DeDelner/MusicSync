@@ -20,7 +20,7 @@ struct SyncSettings: View {
                             in: 0.1...1.0,
                             step: 0.01
                         )
-                        Text("\(settingsManager.maxElapsedTime)ms").frame(width: 50)
+                        Text(String(format: "%.0fms", settingsManager.maxElapsedTime * 1000)).frame(width: 62)
                     }
                     Text("In what interval the lights should be synced.")
                         .font(.footnote)
