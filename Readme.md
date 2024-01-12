@@ -7,7 +7,7 @@
 ---
 
 MusicSync is an iOS app that allows you to synchronize any kind of light entity accessible via Home Assistant with your music in real-time. 
-It uses the microphone of your phone to analyze the music and sync the lights accordingly. 
+It uses the microphone of your device to analyze the music and sync the lights accordingly. 
 
 With MusicSync, you can create a dynamic and immersive lighting experience for your music listening sessions. 
 It's perfect for parties, events, or simply enjoying your favorite songs at home. 
@@ -40,4 +40,19 @@ Then you could run it on your device or simulator.
 
 ---
 
+TODO
 
+## Screenshots
+
+---
+
+TODO
+
+## Limitations
+The application is designed to synchronize a limited number of lights (1 - 3) simultaneously. 
+This limitation arises from the high volume of requests the app sends to Home Assistant, which in turn sends requests to the lights.
+
+The responsiveness of the lights can vary based on how Home Assistant interacts with them (how fast the API is). 
+For instance, a single Zigbee light might respond quickly, but as more lights are added, the latency increases. 
+This could potentially overload your Zigbee controller, causing requests to be stalled.
+Also Wi-Fi interference can cause delays in the communication between the lights and the controller.
