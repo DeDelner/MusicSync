@@ -40,22 +40,27 @@ struct Home: View {
                         Text("Microphone Settings")
                     }
                     NavigationLink {
-                        EmptyView()
+                        SyncSettings()
                     } label: {
                         Text("Sync Settings")
                     }
                 }
                 
                 Section(header: Text("Monitoring")) {
-                    Text("\(audioProcessor.rawAmpltiude)")
+                    Text("Raw: \(Int(audioProcessor.rawAmpltiude * 100)) %")
                     ProgressView(value: Double(audioProcessor.rawAmpltiude))
                         .scaleEffect(x: 1, y: 4, anchor: .center)
-                        .padding(.bottom, 8)
+                    Text("Bass: \(Int(audioProcessor.bassAmpltiude * 100)) %")
+                    ProgressView(value: Double(audioProcessor.bassAmpltiude))
+                        .scaleEffect(x: 1, y: 4, anchor: .center)
                 }
-
-//                ProgressView(value: Double(mic.level[1]) / 255.0)
-//                    .scaleEffect(x: 1, y: 4, anchor: .center)
-//                    .padding(.bottom, 8)
+                
+                Button("Start Syncing") {
+                    audioProcessor.start()
+                }.disabled(!webSocketManager.status.elementsEqual("Authenticated"))
+                Button("Stop Syncing") {
+                    audioProcessor.stop()
+                }
             }
             .navigationTitle("MusicSync")
         }
