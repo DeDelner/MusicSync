@@ -11,25 +11,23 @@ class SettingsManager: ObservableObject {
     static var shared = SettingsManager()
     
     init() {
-        self.sensivity = UserDefaults.standard.float(forKey: "sensivity")
-        self.offset = UserDefaults.standard.float(forKey: "offset")
+        self.ipAddress = UserDefaults.standard.object(forKey: "ipAddress") as? String
+        self.entityId = UserDefaults.standard.object(forKey: "entityId") as? String
+        self.sensivity = UserDefaults.standard.object(forKey: "sensivity") as? Float ?? 1.0
+        self.offset = UserDefaults.standard.object(forKey: "offset") as? Float ?? 0.0
+        self.maxElapsedTime = UserDefaults.standard.object(forKey: "maxElapsedTime") as? Double ?? 0.2
+        self.instantEffectThreshold = UserDefaults.standard.object(forKey: "instantEffectThreshold") as? Float ?? 0.3
     }
     
-    static var ipAddress: String? {
-        get {
-            return UserDefaults.standard.string(forKey: "ipAddress")
-        }
-        set(value) {
-            UserDefaults.standard.set(value, forKey: "ipAddress")
+    @Published var ipAddress: String? {
+        didSet {
+            UserDefaults.standard.set(ipAddress, forKey: "ipAddress")
         }
     }
     
-    static var entityId: String? {
-        get {
-            return UserDefaults.standard.string(forKey: "entityId")
-        }
-        set(value) {
-            UserDefaults.standard.set(value, forKey: "entityId")
+    @Published var entityId: String? {
+        didSet {
+            UserDefaults.standard.set(entityId, forKey: "entityId")
         }
     }
     
@@ -42,6 +40,18 @@ class SettingsManager: ObservableObject {
     @Published var offset: Float {
         didSet {
             UserDefaults.standard.set(offset, forKey: "offset")
+        }
+    }
+    
+    @Published var maxElapsedTime: Double {
+        didSet {
+            UserDefaults.standard.set(maxElapsedTime, forKey: "maxElapsedTime")
+        }
+    }
+    
+    @Published var instantEffectThreshold: Float {
+        didSet {
+            UserDefaults.standard.set(instantEffectThreshold, forKey: "instantEffectThreshold")
         }
     }
 
