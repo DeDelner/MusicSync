@@ -56,13 +56,13 @@ struct HassSettings: View {
 
                 Text("Status: \(webSocketManager.status)")
             }
-            .navigationTitle("Home Assistant")
-            .onAppear {
-                loadSettings()
-            }
             .alert(isPresented: $showingAlert) {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
+        }
+        .navigationTitle("Home Assistant")
+        .onAppear {
+            loadSettings()
         }
     }
 
