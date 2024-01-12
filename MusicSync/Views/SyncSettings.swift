@@ -13,7 +13,7 @@ struct SyncSettings: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Max Elapsed Time")) {
+                Section(header: Text("Interval Time")) {
                     HStack {
                         Slider(
                             value: $settingsManager.maxElapsedTime,
@@ -22,7 +22,7 @@ struct SyncSettings: View {
                         )
                         Text("\(settingsManager.maxElapsedTime)ms").frame(width: 50)
                     }
-                    Text("The maximum allowed time to force syncing.")
+                    Text("In what interval the lights should be synced.")
                         .font(.footnote)
                         .foregroundColor(.gray)
                 }
@@ -37,7 +37,7 @@ struct SyncSettings: View {
                         )
                         Text("\(Int(settingsManager.instantEffectThreshold * 100))%").frame(width: 50)
                     }
-                    Text("At how much volume % the effect should be applied immediately (with no transition).")
+                    Text("At how much volume % the effect should be applied immediately, no matter the interval time. Ideal for bass kicks.")
                         .font(.footnote)
                         .foregroundColor(.gray)
                 }
