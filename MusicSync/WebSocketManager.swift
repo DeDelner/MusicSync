@@ -14,17 +14,13 @@ class WebSocketManager: ObservableObject {
     
     private var webSocket: URLSessionWebSocketTask?
     private var requestID = 1
-    @Published public var status: String = "Not connected"
+    @Published public var status: String = "Disconnected"
     
-    private var hassIP: String? {
-        get {
-            return UserDefaults.standard.string(forKey: "HassIP")
-        }
-    }
+    @ObservedObject var settingsManager = SettingsManager.shared
     
     func connect() throws {
         self.status = "Connecting..."
-        guard let ip = hassIP else {
+        guard let ip = settingsManager.ipAddress else {
             throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "IP address not found"])
         }
         let url = URL(string: "ws://\(ip)/api/websocket")!
@@ -37,16 +33,26 @@ class WebSocketManager: ObservableObject {
         webSocket?.cancel(with: .normalClosure, reason: nil)
     }
     
-    func sendMessage(message: String) {
-        webSocket?.send(URLSessionWebSocketTask.Message.string(message)) { error in
-            if let error = error {
-                print("WebSocket sending error: \(error)")
-            } else {
-                // Call receiveWebSocketMessage() after the message is sent
-                self.receiveResult()
+    func sendMessage(message: [String: Any]) {
+        do {
+            var messageWithID = message
+            if (self.status.elementsEqual("Authenticated")) {
+                messageWithID["id"] = self.requestID
             }
+            let jsonData = try JSONSerialization.data(withJSONObject: messageWithID, options: [])
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            webSocket?.send(URLSessionWebSocketTask.Message.string(jsonString ?? "")) { error in
+                if let error = error {
+                    print("WebSocket sending error: \(error)")
+                } else {
+                    // Call receiveWebSocketMessage() after the message is sent
+                    self.receiveResult()
+                }
+            }
+            self.requestID += 1
+        } catch {
+            print("Error converting message to JSON: \(error)")
         }
-        self.requestID += 1
     }
     
     private func receiveResult() {
@@ -56,18 +62,25 @@ class WebSocketManager: ObservableObject {
                 case .failure(let error):
                     print("WebSocket receiving error: \(error)")
                 case .success(let message):
-                    self.status = "Connected"
                     switch message {
                     case .string(let text):
                         print("Received string: \(text)")
                         if text.contains("\"type\":\"auth_required\"") {
                             self.status = "Authenticating..."
-                            self.sendMessage(message: """
-                            {
-                                "type": "auth",
-                                "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkNTBiYTY3OTE0NmM0NjIyYjRmYzVlMDlmZWM4NGUzYiIsImlhdCI6MTcwNDMxMTgxMCwiZXhwIjoyMDE5NjcxODEwfQ.6fb9zkwo_xOw8FOV4Pz3Lmx7juPFQPSDn8MLwWIwogM"
+                            if let bearerToken = KeychainHelper.load(key: "BearerToken") {
+                                if let bearerTokenString = String(data: bearerToken, encoding: .utf8) {
+                                    self.sendMessage(message:
+                                                        [
+                                                            "type": "auth",
+                                                            "access_token": bearerTokenString
+                                                        ]
+                                    )
+                                } else {
+                                    print("Conversion to string failed")
+                                }
+                            } else {
+                                self.status = "No bearer token provided"
                             }
-                            """)
                         } else if text.contains("\"type\":\"auth_ok\"") {
                             self.status = "Authenticated"
                         }
