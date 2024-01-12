@@ -23,16 +23,16 @@ struct HassSettings: View {
         NavigationView {
             Form {
                 Section(header: Text("Connection")) {
-                    TextField("IP Address or Hostname", text: $ipAddress)
+                    ClearableTextField(placeholder: "IP Address or Local Hostname", text: $ipAddress)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
-                    TextField("Bearer Token", text: $bearerToken)
+                    ClearableTextField(placeholder: "Bearer Token", text: $bearerToken)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                 }
 
                 Section(header: Text("Entity")) {
-                    TextField("Entity ID", text: $entityId)
+                    ClearableTextField(placeholder: "Entity ID", text: $entityId)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                 }
