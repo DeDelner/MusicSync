@@ -22,7 +22,7 @@ struct SyncSettings: View {
                         )
                         Text(String(format: "%.0fms", settingsManager.maxElapsedTime * 1000)).frame(width: 62)
                     }
-                    Text("In what interval the lights should be synced.")
+                    Text("Define the time interval for synchronizing the lights.")
                         .font(.footnote)
                         .foregroundColor(.gray)
                 }
@@ -37,7 +37,7 @@ struct SyncSettings: View {
                         )
                         Text("\(Int(settingsManager.instantEffectThreshold * 100))%").frame(width: 50)
                     }
-                    Text("At how much volume % the effect should be applied immediately, no matter the interval time. Ideal for bass kicks.")
+                    Text("Specify the volume percentage at which the effect should be instantly applied, regardless of the interval time. This is particularly effective for bass kicks.")
                         .font(.footnote)
                         .foregroundColor(.gray)
                 }
