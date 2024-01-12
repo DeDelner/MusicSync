@@ -17,6 +17,7 @@ struct HassSettings: View {
     @State private var isLoading = false
     
     @ObservedObject var webSocketManager = WebSocketManager.shared
+    @ObservedObject var settingsManager = SettingsManager.shared
 
     var body: some View {
         NavigationView {
@@ -67,8 +68,8 @@ struct HassSettings: View {
 
     func saveSettings() throws {
         if validateIpAddress(ipAddress: ipAddress) {
-            UserDefaults.standard.set(ipAddress, forKey: "HassIP")
-            UserDefaults.standard.set(entityId, forKey: "HassEntityID")
+            settingsManager.ipAddress = ipAddress
+            settingsManager.entityId = entityId
             if let tokenData = bearerToken.data(using: .utf8) {
                 let status = KeychainHelper.save(key: "BearerToken", data: tokenData)
                 print(status == noErr ? "Token saved successfully" : "Failed to save Token")
@@ -90,8 +91,8 @@ struct HassSettings: View {
     }
 
     func loadSettings() {
-        ipAddress = UserDefaults.standard.string(forKey: "HassIP") ?? ""
-        entityId = UserDefaults.standard.string(forKey: "HassEntityID") ?? ""
+        ipAddress = settingsManager.ipAddress ?? ""
+        entityId = settingsManager.entityId ?? ""
         if let token = KeychainHelper.load(key: "BearerToken") {
             bearerToken = String(decoding: token, as: UTF8.self)
         }
