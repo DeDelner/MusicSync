@@ -37,7 +37,7 @@ struct SyncSettings: View {
                         )
                         Text("\(Int(settingsManager.instantEffectThreshold * 100))%").frame(width: 50)
                     }
-                    Text("Specify the volume percentage at which the effect should be instantly applied, regardless of the interval time. This is particularly effective for bass kicks.")
+                    Text("Specify the volume % at which the lights should be synced immediatetly, regardless of the interval time. This is particularly effective for bass kicks.")
                         .font(.footnote)
                         .foregroundColor(.gray)
                 }
