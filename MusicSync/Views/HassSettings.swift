@@ -23,7 +23,7 @@ struct HassSettings: View {
         NavigationView {
             Form {
                 Section(header: Text("Connection")) {
-                    ClearableTextField(placeholder: "IP Address or Local Hostname", text: $ipAddress)
+                    ClearableTextField(placeholder: "Local IP Address", text: $ipAddress)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                     ClearableTextField(placeholder: "Bearer Token", text: $bearerToken)
@@ -67,6 +67,9 @@ struct HassSettings: View {
     }
 
     func saveSettings() throws {
+        if entityId.isEmpty {
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Entity ID cannot be empty"])
+        }
         if validateIpAddress(ipAddress: ipAddress) {
             settingsManager.ipAddress = ipAddress
             settingsManager.entityId = entityId
@@ -75,7 +78,7 @@ struct HassSettings: View {
                 print(status == noErr ? "Token saved successfully" : "Failed to save Token")
             }
         } else {
-            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Invalid IP address or port. It cannot start with http:// or https:// (for now)"])
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Invalid IP address or port. It cannot start with http:// or https://."])
         }
     }
 
