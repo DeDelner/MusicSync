@@ -11,6 +11,7 @@
 		AE3FF8132A08CD7900EEBB9A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3FF8122A08CD7900EEBB9A /* ContentView.swift */; };
 		AE3FF8152A08CD7A00EEBB9A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */; };
 		AE3FF8182A08CD7A00EEBB9A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */; };
+		AE4A85322B4B1E520049CBD1 /* SyncSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4A85312B4B1E520049CBD1 /* SyncSettings.swift */; };
 		AE8222C52B474D8F0054BB36 /* Microphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8222C42B474D8F0054BB36 /* Microphone.swift */; };
 		AE8222C72B4754D30054BB36 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8222C62B4754D30054BB36 /* SettingsManager.swift */; };
 		AE8222C92B47555A0054BB36 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8222C82B47555A0054BB36 /* KeychainHelper.swift */; };
@@ -28,6 +29,7 @@
 		AE3FF8122A08CD7900EEBB9A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AE3FF8142A08CD7A00EEBB9A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE3FF8172A08CD7A00EEBB9A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AE4A85312B4B1E520049CBD1 /* SyncSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettings.swift; sourceTree = "<group>"; };
 		AE8222C42B474D8F0054BB36 /* Microphone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microphone.swift; sourceTree = "<group>"; };
 		AE8222C62B4754D30054BB36 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		AE8222C82B47555A0054BB36 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			children = (
 				AEFCC3D82B4307BA007A5507 /* Views */,
 				AEAEAB282A0D50C100DD36B6 /* Info.plist */,
+				AE8222CA2B4859180054BB36 /* AudioProcessor.swift */,
 				AEADFF6E2B45DB9F0037F158 /* WebSocketManager.swift */,
 				AE3FF8102A08CD7900EEBB9A /* MusicSyncApp.swift */,
 				AE3FF8122A08CD7900EEBB9A /* ContentView.swift */,
@@ -81,7 +84,6 @@
 				AE8222C42B474D8F0054BB36 /* Microphone.swift */,
 				AE8222C62B4754D30054BB36 /* SettingsManager.swift */,
 				AE8222C82B47555A0054BB36 /* KeychainHelper.swift */,
-				AE8222CA2B4859180054BB36 /* AudioProcessor.swift */,
 			);
 			path = MusicSync;
 			sourceTree = "<group>";
@@ -100,6 +102,7 @@
 				AEFCC3D92B4307D1007A5507 /* Home.swift */,
 				AEADFF6C2B4340B90037F158 /* HassSettings.swift */,
 				AEC98EF12B48717F006671A7 /* MicrophoneSettings.swift */,
+				AE4A85312B4B1E520049CBD1 /* SyncSettings.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 				AE8222CB2B4859180054BB36 /* AudioProcessor.swift in Sources */,
 				AEFCC3DA2B4307D1007A5507 /* Home.swift in Sources */,
 				AE8222C92B47555A0054BB36 /* KeychainHelper.swift in Sources */,
+				AE4A85322B4B1E520049CBD1 /* SyncSettings.swift in Sources */,
 				AE8222C72B4754D30054BB36 /* SettingsManager.swift in Sources */,
 				AEFBD4F92A09586D00CC63A9 /* DeprecatedMicrophone.swift in Sources */,
 				AE8222C52B474D8F0054BB36 /* Microphone.swift in Sources */,
@@ -313,10 +317,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSync/Preview Content\"";
-				DEVELOPMENT_TEAM = 7N768UHAM7;
+				DEVELOPMENT_TEAM = FK8K79LJ66;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicSync/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MusicSync;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To determine music volume to sync the lights with";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -327,9 +333,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = pl.dedelner.MusicSync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -344,10 +353,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSync/Preview Content\"";
-				DEVELOPMENT_TEAM = 7N768UHAM7;
+				DEVELOPMENT_TEAM = FK8K79LJ66;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicSync/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MusicSync;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To determine music volume to sync the lights with";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -358,9 +369,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = pl.dedelner.MusicSync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
