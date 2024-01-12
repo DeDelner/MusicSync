@@ -19,9 +19,15 @@ The application is easy to use and highly customizable, giving you full control 
 
 ---
 
+### It's plug & play! 🎉
+**No addons, custom integrations or additional configurations are required!**
+All you need is a local Home Assistant instance with some lights and a long live access token (bearer token).
+
+### Obtaining the app
+
 > **NOTE:**  The app is not yet available on the App Store.
 
-### Method 1: Joining TestFlight
+#### Method 1: Joining TestFlight
 The easiest way to get started is to join the TestFlight beta program.
 
 ### [👉 Join TestFlight](https://testflight.apple.com/join/4nCUW4lI)
@@ -32,7 +38,7 @@ The easiest way to get started is to join the TestFlight beta program.
 4. Tap Install to install the app on your device.
 5. If you’re a returning tester, tap Update or Open.
 
-### Method2: Clone the repository
+#### Method 2: Clone the repository
 Alternatively, you can clone the repository and compile the app yourself using Xcode. 
 Then you could run it on your device or simulator.
 
